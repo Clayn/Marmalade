@@ -25,11 +25,13 @@ package net.bplaced.clayn.marmalade.ui;
 
 import java.io.IOException;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.bplaced.clayn.marmalade.ui.controller.InitWindowController;
 
 /**
  *
@@ -44,13 +46,28 @@ public class MarmaladeApp extends Application
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
                 "/fxml/InitWindow.fxml"));
         Parent root = loader.load();
-
+        InitWindowController cont=loader.getController();
         Scene scene = new Scene(root);
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setTitle("Marmalade");
         primaryStage.setScene(scene);
         primaryStage.show();
+        Platform.runLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    cont.init();
+                } catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
+    
 
     /**
      * @param args the command line arguments

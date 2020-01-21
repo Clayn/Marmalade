@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
 import net.bplaced.clayn.marmalade.io.StaticPaths;
 import org.apache.commons.configuration2.JSONConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -18,10 +19,22 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 public class Configurator
 {
 
-    private static final JSONConfiguration getDefaultConfiguration()
+    private static JSONConfiguration getDefaultConfiguration()
     {
         JSONConfiguration config = new JSONConfiguration();
         return config;
+    }
+    
+    public static void initDefaultConfiguration() {
+        JSONConfiguration exist=getConfiguration();
+        JSONConfiguration def=getDefaultConfiguration();
+        for(Iterator<String> it=def.getKeys();it.hasNext();) {
+            String key=it.next();
+            if(!exist.containsKey(key)) {
+                exist.setProperty(key, def.getProperty(key));
+            }
+        }
+        saveConfiguration(exist);
     }
 
     public static void saveConfiguration(JSONConfiguration conf)
@@ -48,7 +61,6 @@ public class Configurator
         if (!Files.exists(confFile))
         {
             config = getDefaultConfiguration();
-            saveConfiguration(config);
             return config;
         }
         JSONConfiguration jConf = new JSONConfiguration();

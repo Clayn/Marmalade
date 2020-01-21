@@ -23,6 +23,7 @@ module net.bplaced.clayn.marmalade {
     requires javafx.base;
     requires javafx.graphics;
     requires org.apache.commons.configuration2;
+    requires net.bplaced.clayn.marmalade.app;
 
     opens net.bplaced.clayn.marmalade.ui to javafx.fxml, javafx.graphics;
     opens net.bplaced.clayn.marmalade.ui.controller to javafx.fxml, javafx.graphics;

@@ -24,4 +24,11 @@ public final class StaticPaths
                 System.getProperty("user.home"));
         return Path.of(path, "Marmalade", "marmalade.properties");
     }
+
+    public static Path getJamDirectory()
+    {
+        String path = System.getenv().getOrDefault("APPDATA",
+                System.getProperty("user.home"));
+        return Path.of(path, "Marmalade", "Shelf");}
+
 }

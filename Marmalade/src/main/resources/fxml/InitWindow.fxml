@@ -15,10 +15,8 @@
    <children>
       <VBox layoutX="5.0" layoutY="377.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
          <children>
-            <Label text="Label" />
-            <ProgressBar maxWidth="1.7976931348623157E308" progress="0.0" VBox.vgrow="ALWAYS" />
-            <Label text="Label" />
-            <ProgressBar maxWidth="1.7976931348623157E308" prefWidth="200.0" progress="0.0" VBox.vgrow="ALWAYS" />
+            <Label text="" fx:id="taskLabel"/>
+            <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" prefWidth="200.0" progress="0.0" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
       <Text layoutX="125.0" layoutY="228.0" rotate="10.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Marmalade">
