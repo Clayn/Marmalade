@@ -21,33 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.conf;
+package net.bplaced.clayn.marmalade.app;
 
-import javafx.application.Platform;
-import net.bplaced.clayn.marmalade.app.MarmaladeApplication;
-import net.bplaced.clayn.marmalade.util.TaskManager;
+import java.util.ArrayList;
+import java.util.List;
+import net.bplaced.clayn.marmalade.jar.api.Library;
 
 /**
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public final class AppRuntime
+public class MarmaladeAppHandle implements ApplicationHandle
 {
 
-    private static final AppRuntime INSTANCE = new AppRuntime();
-    private final MarmaladeApplication mApp = MarmaladeApplication.prepare();
+    private final List<Library> libraries = new ArrayList<>();
 
-    public static AppRuntime getRuntime()
+    void addLibrary(Library lib)
     {
-        return INSTANCE;
+        libraries.add(lib);
     }
-    
-    public MarmaladeApplication getApplication() {
-        return mApp;
+
+    @Override
+    public List<Library> getLibraries()
+    {
+        return libraries;
     }
-    
-    public void close() {
-        TaskManager.getTaskManager().shutdown();
-        Platform.exit();
-    }
+
 }

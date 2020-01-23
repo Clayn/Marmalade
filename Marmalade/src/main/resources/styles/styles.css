@@ -2,6 +2,10 @@
  * Empty Stylesheet file.
  */
 
-.mainFxmlClass {
+.gameButton {
+    -fx-background-color: transparent;
+}
 
+.gameButton:hover {
+    -fx-background-color: #dae7f3;
 }

@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Iterator;
+import net.bplaced.clayn.marmalade.core.health.HealthCenter;
 import net.bplaced.clayn.marmalade.io.StaticPaths;
 import org.apache.commons.configuration2.JSONConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -24,13 +25,16 @@ public class Configurator
         JSONConfiguration config = new JSONConfiguration();
         return config;
     }
-    
-    public static void initDefaultConfiguration() {
-        JSONConfiguration exist=getConfiguration();
-        JSONConfiguration def=getDefaultConfiguration();
-        for(Iterator<String> it=def.getKeys();it.hasNext();) {
-            String key=it.next();
-            if(!exist.containsKey(key)) {
+
+    public static void initDefaultConfiguration()
+    {
+        JSONConfiguration exist = getConfiguration();
+        JSONConfiguration def = getDefaultConfiguration();
+        for (Iterator<String> it = def.getKeys(); it.hasNext();)
+        {
+            String key = it.next();
+            if (!exist.containsKey(key))
+            {
                 exist.setProperty(key, def.getProperty(key));
             }
         }
@@ -50,7 +54,7 @@ public class Configurator
             conf.write(writer);
         } catch (IOException | ConfigurationException ex)
         {
-            ex.printStackTrace();
+            HealthCenter.getErrorCenter().report(ex);
         }
     }
 
@@ -58,10 +62,17 @@ public class Configurator
     {
         Path confFile = StaticPaths.getConfigurationFile();
         JSONConfiguration config = null;
-        if (!Files.exists(confFile))
+        try
         {
-            config = getDefaultConfiguration();
-            return config;
+            if (!Files.exists(confFile) || Files.size(confFile) <= 0)
+            {
+                config = getDefaultConfiguration();
+                return config;
+            }
+        } catch (IOException ex)
+        {
+            HealthCenter.getErrorCenter().report(ex);
+            return getDefaultConfiguration();
         }
         JSONConfiguration jConf = new JSONConfiguration();
         try (InputStream in = Files.newInputStream(confFile))
@@ -70,6 +81,7 @@ public class Configurator
             config = jConf;
         } catch (IOException | ConfigurationException ex)
         {
+            HealthCenter.getErrorCenter().report(ex);
             throw new RuntimeException(ex);
         }
         return config;

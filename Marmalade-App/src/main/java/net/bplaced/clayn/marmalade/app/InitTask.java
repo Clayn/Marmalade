@@ -21,33 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.conf;
-
-import javafx.application.Platform;
-import net.bplaced.clayn.marmalade.app.MarmaladeApplication;
-import net.bplaced.clayn.marmalade.util.TaskManager;
+package net.bplaced.clayn.marmalade.app;
 
 /**
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public final class AppRuntime
+public interface InitTask
 {
-
-    private static final AppRuntime INSTANCE = new AppRuntime();
-    private final MarmaladeApplication mApp = MarmaladeApplication.prepare();
-
-    public static AppRuntime getRuntime()
-    {
-        return INSTANCE;
-    }
+    String getDescription();
     
-    public MarmaladeApplication getApplication() {
-        return mApp;
-    }
-    
-    public void close() {
-        TaskManager.getTaskManager().shutdown();
-        Platform.exit();
-    }
+    void call() throws Exception;
 }

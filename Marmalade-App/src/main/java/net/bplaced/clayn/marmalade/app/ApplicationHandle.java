@@ -21,33 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.conf;
+package net.bplaced.clayn.marmalade.app;
 
-import javafx.application.Platform;
-import net.bplaced.clayn.marmalade.app.MarmaladeApplication;
-import net.bplaced.clayn.marmalade.util.TaskManager;
+import java.util.List;
+import net.bplaced.clayn.marmalade.jar.api.Library;
 
 /**
- *
+ * The application handle provides a bridge between the application and the interface 
+ * using it. 
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public final class AppRuntime
+public interface ApplicationHandle
 {
-
-    private static final AppRuntime INSTANCE = new AppRuntime();
-    private final MarmaladeApplication mApp = MarmaladeApplication.prepare();
-
-    public static AppRuntime getRuntime()
-    {
-        return INSTANCE;
-    }
+    List<Library> getLibraries();
     
-    public MarmaladeApplication getApplication() {
-        return mApp;
-    }
-    
-    public void close() {
-        TaskManager.getTaskManager().shutdown();
-        Platform.exit();
-    }
 }

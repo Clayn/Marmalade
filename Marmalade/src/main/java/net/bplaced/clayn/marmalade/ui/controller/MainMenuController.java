@@ -1,3 +1,5 @@
+package net.bplaced.clayn.marmalade.ui.controller;
+
 /*
  * The MIT License
  *
@@ -21,33 +23,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.conf;
 
-import javafx.application.Platform;
-import net.bplaced.clayn.marmalade.app.MarmaladeApplication;
-import net.bplaced.clayn.marmalade.util.TaskManager;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.MenuBar;
+import net.bplaced.clayn.marmalade.ui.dialog.MarmaladeDialog;
 
 /**
+ * FXML Controller class
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public final class AppRuntime
+public class MainMenuController implements Initializable
 {
 
-    private static final AppRuntime INSTANCE = new AppRuntime();
-    private final MarmaladeApplication mApp = MarmaladeApplication.prepare();
-
-    public static AppRuntime getRuntime()
+    @FXML
+    private MenuBar menu;
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb)
     {
-        return INSTANCE;
-    }
+        // TODO
+    }    
     
-    public MarmaladeApplication getApplication() {
-        return mApp;
-    }
-    
-    public void close() {
-        TaskManager.getTaskManager().shutdown();
-        Platform.exit();
+    @FXML
+    private void onExit() {
+        MarmaladeDialog.exitDialog()
+                .owner(menu.getScene().getWindow()
+                ).show();
     }
 }

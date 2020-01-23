@@ -24,7 +24,12 @@
 package net.bplaced.clayn.marmalade.app;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
+import net.bplaced.clayn.marmalade.sb.StrawberryLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +43,16 @@ public final class MarmaladeApplication
     private static final Logger LOG = LoggerFactory.getLogger(
             MarmaladeApplication.class);
 
+    private final List<InitTask> tasks = new ArrayList<InitTask>();
     private BiConsumer<String, Object[]> output = LOG::debug;
     private File configurationFile;
     private File jamDirectory;
+    private File strawberryDirectory;
     private String currentTask = "";
     private int currentTaskCount = 0;
-    private final int maxTaskCount = 2;
     private StartUpListener listener;
-
+    private final FSHandler handler = new FSHandler();
+    private final MarmaladeAppHandle appHandle=new MarmaladeAppHandle();
     private void changeTask(String newTask)
     {
 
@@ -53,12 +60,12 @@ public final class MarmaladeApplication
         {
             currentTaskCount++;
         }
-        double progress = (currentTaskCount * 1.0) / (maxTaskCount * 1.0);
+        double progress = (currentTaskCount * 1.0) / (tasks.size() * 1.0);
         if (listener != null)
         {
             listener.onCurrentTaskChanged(currentTask == null ? "" : currentTask,
                     newTask == null ? "" : newTask, currentTaskCount,
-                    maxTaskCount, progress);
+                    tasks.size(), progress);
         }
         if (newTask != null && !newTask.isBlank())
         {
@@ -88,10 +95,83 @@ public final class MarmaladeApplication
         setJamDirectory(jamDirectory);
         return this;
     }
+    
+    public MarmaladeApplication strawberryDirectory(File strawberryDirectory)
+    {
+        setStrawberryDirectory(strawberryDirectory);
+        return this;
+    }
+
+    public void setStrawberryDirectory(File strawberryDirectory)
+    {
+        this.strawberryDirectory = strawberryDirectory;
+    }
 
     public MarmaladeApplication()
     {
         print("Preparing a new Marmalade Application");
+        tasks.add(new InitTask()
+        {
+            @Override
+            public String getDescription()
+            {
+                return "Creating configuration file";
+            }
+
+            @Override
+            public void call() throws Exception
+            {
+                if (configurationFile != null)
+                {
+                    print("Creating configuration file: {}",
+                            configurationFile.getAbsolutePath());
+                    handler.prepareFile(configurationFile.getAbsolutePath(),
+                            false);
+                }
+            }
+        });
+        tasks.add(new InitTask()
+        {
+            @Override
+            public String getDescription()
+            {
+                return "Creating jam directory";
+            }
+
+            @Override
+            public void call() throws Exception
+            {
+                if (jamDirectory != null)
+                {
+                    print("Creating jam directory: {}",
+                            jamDirectory.getAbsolutePath());
+                    handler.prepareDirectory(jamDirectory.getAbsolutePath(),
+                            false);
+                }
+            }
+        });
+        tasks.add(new InitTask()
+        {
+            @Override
+            public String getDescription()
+            {
+                return "Preparing libraries";
+            }
+
+            @Override
+            public void call() throws Exception
+            {
+                if(strawberryDirectory!=null) {
+                    handler.prepareDirectory(strawberryDirectory.getAbsolutePath(),
+                            false);
+                    StrawberryLibrary lib=new StrawberryLibrary();
+                    Map<String,Object> config=new HashMap<>();
+                    config.put("sb.library.path", strawberryDirectory);
+                    lib.configure(config);
+                    appHandle.addLibrary(lib);
+                }
+            }
+        });
     }
 
     private void print(String mes, Object... args)
@@ -114,35 +194,28 @@ public final class MarmaladeApplication
         this.listener = listener;
     }
 
-    public MarmaladeApplication listener(StartUpListener listener) {
+    public MarmaladeApplication listener(StartUpListener listener)
+    {
         setListener(listener);
         return this;
     }
+
     public MarmaladeApplication output(BiConsumer<String, Object[]> output)
     {
         setOutput(output);
         return this;
     }
 
+    public ApplicationHandle getApplicationHandle() {
+        return appHandle;
+    }
+     
     public void start() throws Exception
     {
-        FSHandler handler = new FSHandler();
-        changeTask("Creating configuration file");
-        if (configurationFile != null)
-        {
-            print("Creating configuration file: {}",
-                    configurationFile.getAbsolutePath());
-            handler.prepareFile(configurationFile.getAbsolutePath(), false);
+        for(InitTask task:tasks) {
+            changeTask(task.getDescription());
+            task.call();
         }
-        Thread.sleep(1000);
-        changeTask("Creating jam directory");
-        if (jamDirectory != null)
-        {
-            print("Creating jam directory: {}",
-                    jamDirectory.getAbsolutePath());
-            handler.prepareDirectory(jamDirectory.getAbsolutePath(), false);
-        }
-        Thread.sleep(1000);
         changeTask(null);
     }
 }

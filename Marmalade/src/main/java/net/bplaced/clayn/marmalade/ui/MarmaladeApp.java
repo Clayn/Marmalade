@@ -31,6 +31,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.bplaced.clayn.marmalade.core.health.HealthCenter;
 import net.bplaced.clayn.marmalade.ui.controller.InitWindowController;
 
 /**
@@ -62,7 +63,7 @@ public class MarmaladeApp extends Application
                     cont.init();
                 } catch (Exception ex)
                 {
-                    ex.printStackTrace();
+                    HealthCenter.getErrorCenter().report(ex);
                 }
             }
         });

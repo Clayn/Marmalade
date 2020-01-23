@@ -19,7 +19,7 @@
             <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" prefWidth="200.0" progress="0.0" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
-      <Text layoutX="125.0" layoutY="228.0" rotate="10.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Marmalade">
+      <Text fx:id="title" layoutX="125.0" layoutY="228.0" rotate="10.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Marmalade">
          <font>
             <Font size="70.0" />
          </font>

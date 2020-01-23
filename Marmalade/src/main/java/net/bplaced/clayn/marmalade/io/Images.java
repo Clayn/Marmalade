@@ -21,33 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.conf;
+package net.bplaced.clayn.marmalade.io;
 
-import javafx.application.Platform;
-import net.bplaced.clayn.marmalade.app.MarmaladeApplication;
-import net.bplaced.clayn.marmalade.util.TaskManager;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public final class AppRuntime
+public enum Images
 {
+    NO_GAME_ICON("/images/no_game.png");
+    
+    private final String resourcePath;
 
-    private static final AppRuntime INSTANCE = new AppRuntime();
-    private final MarmaladeApplication mApp = MarmaladeApplication.prepare();
-
-    public static AppRuntime getRuntime()
+    private Images(String resourcePath)
     {
-        return INSTANCE;
+        this.resourcePath = resourcePath;
     }
     
-    public MarmaladeApplication getApplication() {
-        return mApp;
+    public Image loadImage() {
+        return new Image(getClass().getResourceAsStream(resourcePath));
     }
     
-    public void close() {
-        TaskManager.getTaskManager().shutdown();
-        Platform.exit();
+    public ImageView createImageView(double width,double heigth) {
+        ImageView img=new ImageView(loadImage());
+        if(width>0&&heigth>0) {
+            img.setFitHeight(heigth);
+            img.setFitWidth(width);
+        }
+        return img;
+    }
+    
+    public ImageView createImageView() {
+        return createImageView(-1, -1);
+    }
+
+    public ImageView createImageView(double size)
+    {
+        return createImageView(size, size);
     }
 }
