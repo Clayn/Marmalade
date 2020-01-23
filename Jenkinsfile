@@ -70,9 +70,9 @@ node {
         }
         stage('Install Marmalade') {
             if (isUnix()) {
-                sh "'${mvnHome}/bin/mvn' -DskipTests install jfx:native"
+                sh "'${mvnHome}/bin/mvn' -DskipTests install"
             } else {
-                bat(/"${mvnHome}\bin\mvn" -DskipTests install jfx:native/)
+                bat(/"${mvnHome}\bin\mvn" -DskipTests install/)
             }
             archiveArtifacts allowEmptyArchive: true, artifacts: 'executable/*', fingerprint: true
         }
