@@ -23,11 +23,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.bplaced.clayn</groupId>
     <artifactId>marmalade</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <deploy.version>0.1</deploy.version>
     </properties>
     <dependencies>
         <dependency>
@@ -59,6 +60,25 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.8.3</version>
+                <configuration>
+                    <jfxAppOutputDir>executable/jfx</jfxAppOutputDir>
+                    <nativeOutputDir>executable/native</nativeOutputDir>
+                    <mainClass>net.bplaced.clayn.marmalade.ui.MarmaladeApp</mainClass>
+                    <allPermissions>true</allPermissions>
+                    <vendor>ClaynTech</vendor>
+                    <appName>Marmalade</appName>
+                    <bundleArguments>
+                        <mac.dmg.simple>true</mac.dmg.simple>
+                        <systemWide>true</systemWide>
+                    </bundleArguments>
+                    <nativeReleaseVersion>${deploy.version}</nativeReleaseVersion>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
