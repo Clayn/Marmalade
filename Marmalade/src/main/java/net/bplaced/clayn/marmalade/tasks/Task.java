@@ -21,28 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.io;
-
-import javafx.scene.image.Image;
+package net.bplaced.clayn.marmalade.tasks;
 
 /**
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public enum Images
+public enum Task
 {
-    NO_GAME_ICON("/images/no_game.png");
-    
-    private final String resourcePath;
-
-    private Images(String resourcePath)
-    {
-        this.resourcePath = resourcePath;
-    }
-    
-    public Image loadImage() {
-        return new Image(getClass().getResourceAsStream(resourcePath));
-    }
-    
-    
+    REFRESH_GAMES;
 }

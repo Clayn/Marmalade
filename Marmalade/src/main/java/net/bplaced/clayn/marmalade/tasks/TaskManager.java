@@ -21,10 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.util;
+package net.bplaced.clayn.marmalade.tasks;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +46,8 @@ public class TaskManager
 {
 
     private static final TaskManager INSTANCE = new TaskManager();
+
+    private final Map<String, Callable<Void>> taskActions = new HashMap<>();
 
     private final ExecutorService execService = Executors.newCachedThreadPool(
             new ThreadFactory()
@@ -79,6 +85,10 @@ public class TaskManager
         return INSTANCE;
     }
 
+    public <T> Future<T> execute(Callable<T> action) {
+        return execService.submit(action);
+    }
+    
     public void execute(Runnable run)
     {
         execService.submit(run);
@@ -102,5 +112,39 @@ public class TaskManager
     {
         execService.shutdownNow();
         scheduledService.shutdownNow();
+    }
+
+    public void trigger(String task) {
+        if(taskActions.containsKey(task)) {
+            execute(taskActions.get(task));
+        }
+    }
+    
+    public void trigger(Task task) {
+        trigger(task.name());
+    }
+    
+    public void register(String task, Callable<Void> action)
+    {
+        if(task==null||action==null) {
+            return;
+        }
+        taskActions.put(task, action);
+    }
+
+    public void register(String task, Runnable action)
+    {
+        register(task, () ->
+        {
+            action.run();
+            return null;
+        });
+    }
+    
+    public void register(Task task, Callable<Void> action) {
+        register(task.name(), action);
+    }
+    public void register(Task task, Runnable action) {
+        register(task.name(), action);
     }
 }

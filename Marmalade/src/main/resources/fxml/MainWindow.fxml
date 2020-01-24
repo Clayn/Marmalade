@@ -11,7 +11,7 @@
         <URL value="@/styles/styles.css" />
     </stylesheets>
     <children>
-      <fx:include source="MainMenu.fxml" />
+      <fx:include source="component/MainMenu.fxml" />
       <BorderPane prefHeight="600.0" prefWidth="800.0">
          <center>
             <FlowPane fx:id="gamePane" hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">

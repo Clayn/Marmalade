@@ -23,6 +23,9 @@
  */
 package net.bplaced.clayn.marmalade.ui.controller;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.net.URI;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
@@ -30,18 +33,23 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import net.bplaced.clayn.marmalade.conf.AppRuntime;
+import javax.swing.Icon;
+import javax.swing.filechooser.FileSystemView;
+import net.bplaced.clayn.marmalade.AppRuntime;
 import net.bplaced.clayn.marmalade.core.Game;
-import net.bplaced.clayn.marmalade.io.Images;
+import net.bplaced.clayn.marmalade.io.ImageHelper;
 import net.bplaced.clayn.marmalade.jar.api.Library;
-import net.bplaced.clayn.marmalade.util.TaskManager;
+import net.bplaced.clayn.marmalade.tasks.Task;
+import net.bplaced.clayn.marmalade.tasks.TaskManager;
 
 /**
  * FXML Controller class
@@ -65,9 +73,10 @@ public class MainWindowController implements Initializable
     {
         TaskManager.getTaskManager().schedule(this::loadGames, 0, 10,
                 TimeUnit.SECONDS);
+        TaskManager.getTaskManager().register(Task.REFRESH_GAMES, this::loadGames);
     }
 
-    private void loadGames()
+    private synchronized void loadGames()
     {
         if (Platform.isFxApplicationThread())
         {
@@ -87,7 +96,28 @@ public class MainWindowController implements Initializable
 
     private Node convertGameToNode(Game g)
     {
-        ImageView view = Images.NO_GAME_ICON.createImageView(64.0);
+        System.out.println("Loaded game: "+g);
+        URI imgUri=g.getImage();
+        Image img=null;
+        ImageView view=null;
+        if(imgUri!=null) {
+           view=ImageHelper.createImageView(imgUri, 64, 64);
+        }else {
+            view=new ImageView();
+            view.setFitWidth(64);
+            view.setFitHeight(64);
+            Icon icon=FileSystemView.getFileSystemView().getSystemIcon(g.getExecutable());
+        BufferedImage bi = new BufferedImage(
+            icon.getIconWidth(),
+            icon.getIconHeight(),
+            BufferedImage.TYPE_INT_RGB);
+        Graphics gr = bi.createGraphics();
+        icon.paintIcon(null,gr,0,0);
+        gr.dispose();
+        Image swingImg = SwingFXUtils.toFXImage(bi,null);
+        view.setImage(swingImg);
+        }
+        
         Tooltip tip = new Tooltip(g.getName());
         Button b=new Button();
         b.setGraphic(view);

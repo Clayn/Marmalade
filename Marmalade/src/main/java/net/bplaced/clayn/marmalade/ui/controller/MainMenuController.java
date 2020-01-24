@@ -23,12 +23,21 @@ package net.bplaced.clayn.marmalade.ui.controller;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import net.bplaced.clayn.marmalade.core.Game;
+import net.bplaced.clayn.marmalade.tasks.Task;
+import net.bplaced.clayn.marmalade.tasks.TaskManager;
+import net.bplaced.clayn.marmalade.ui.dialog.GameInputDialogController;
 import net.bplaced.clayn.marmalade.ui.dialog.MarmaladeDialog;
 
 /**
@@ -39,19 +48,43 @@ import net.bplaced.clayn.marmalade.ui.dialog.MarmaladeDialog;
 public class MainMenuController implements Initializable
 {
 
+    private ResourceBundle resources;
     @FXML
     private MenuBar menu;
+
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        // TODO
-    }    
-    
+        resources = rb;
+    }
+
     @FXML
-    private void onExit() {
+    private void onNewGame() throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                "/fxml/GameInputDialog.fxml"));
+        loader.setResources(resources);
+        Parent p = loader.load();
+        GameInputDialogController controller = loader.getController();
+        controller.setGame(new Game());
+        controller.setEditMode(false);
+        Scene sc = new Scene(p);
+        Stage st = new Stage();
+        st.setScene(sc);
+        st.initModality(Modality.WINDOW_MODAL);
+        st.initOwner(menu.getScene().getWindow());
+        st.showAndWait();
+        TaskManager.getTaskManager().trigger(Task.REFRESH_GAMES);
+    }
+
+    @FXML
+    private void onExit()
+    {
         MarmaladeDialog.exitDialog()
                 .owner(menu.getScene().getWindow()
                 ).show();

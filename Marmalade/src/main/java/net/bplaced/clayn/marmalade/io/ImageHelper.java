@@ -23,26 +23,62 @@
  */
 package net.bplaced.clayn.marmalade.io;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public enum Images
+public class ImageHelper
 {
-    NO_GAME_ICON("/images/no_game.png");
-    
-    private final String resourcePath;
 
-    private Images(String resourcePath)
+    public static Image loadImage(URI uri)
     {
-        this.resourcePath = resourcePath;
+        try (InputStream in = uri.toURL().openStream())
+        {
+            return new Image(in);
+        } catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
     }
-    
-    public Image loadImage() {
-        return new Image(getClass().getResourceAsStream(resourcePath));
+
+    public static ImageView createImageView(URI uri, double width, double heigth)
+    {
+        Image img = loadImage(uri);
+
+        return createImageView(img, width, heigth);
     }
-    
-    
+
+    public static ImageView createImageView(Image img, double width,
+            double heigth)
+    {
+        ImageView back = new ImageView(img);
+        if (width > 0 && heigth > 0)
+        {
+            back.setFitHeight(heigth);
+            back.setFitWidth(width);
+        }
+        return back;
+    }
+
+    public static ImageView createImageView(Images img, double width,
+            double heigth)
+    {
+        return createImageView(img.loadImage(), width, heigth);
+    }
+
+    public static ImageView createImageView(Images img)
+    {
+        return createImageView(img, -1, -1);
+    }
+
+    public static ImageView createImageView(Images img, double size)
+    {
+        return createImageView(img, size, size);
+    }
 }

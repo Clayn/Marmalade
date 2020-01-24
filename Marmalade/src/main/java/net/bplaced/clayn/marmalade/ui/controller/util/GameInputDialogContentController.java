@@ -21,33 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.conf;
+package net.bplaced.clayn.marmalade.ui.controller.util;
 
-import javafx.application.Platform;
-import net.bplaced.clayn.marmalade.app.MarmaladeApplication;
-import net.bplaced.clayn.marmalade.util.TaskManager;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.fxml.Initializable;
+import net.bplaced.clayn.marmalade.core.Game;
 
 /**
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public final class AppRuntime
+public abstract class GameInputDialogContentController implements Initializable
 {
-
-    private static final AppRuntime INSTANCE = new AppRuntime();
-    private final MarmaladeApplication mApp = MarmaladeApplication.prepare();
-
-    public static AppRuntime getRuntime()
-    {
-        return INSTANCE;
+    protected final ObjectProperty<Game> currentGame=new SimpleObjectProperty<>();
+    protected final BooleanProperty editMode=new SimpleBooleanProperty(false);
+    
+    public final BooleanProperty editModeProperty() {
+        return editMode;
     }
     
-    public MarmaladeApplication getApplication() {
-        return mApp;
-    }
-    
-    public void close() {
-        TaskManager.getTaskManager().shutdown();
-        Platform.exit();
+    public final ObjectProperty<Game> currentGameProperty() {
+        return currentGame;
     }
 }

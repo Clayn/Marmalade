@@ -23,26 +23,60 @@
  */
 package net.bplaced.clayn.marmalade.io;
 
-import javafx.scene.image.Image;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public enum Images
+public class ImageHelperTest
 {
-    NO_GAME_ICON("/images/no_game.png");
     
-    private final String resourcePath;
-
-    private Images(String resourcePath)
+    public ImageHelperTest()
     {
-        this.resourcePath = resourcePath;
     }
     
-    public Image loadImage() {
-        return new Image(getClass().getResourceAsStream(resourcePath));
+    @BeforeAll
+    public static void setUpClass()
+    {
     }
     
+    @AfterAll
+    public static void tearDownClass()
+    {
+    }
     
+    @BeforeEach
+    public void setUp()
+    {
+    }
+    
+    @AfterEach
+    public void tearDown()
+    {
+    }
+
+    @Test
+    public void testLoadURIURL() throws MalformedURLException, URISyntaxException {
+        String page="https://homepages.cae.wisc.edu/~ece533/images/baboon.png";
+        URL url=new URL(page);
+        Assertions.assertNotNull(ImageHelper.createImageView(url.toURI(), 100, 100));
+    }
+    @Test
+    public void testLoadFile() throws MalformedURLException, URISyntaxException {
+        String file=getClass().getResource("/images/no_game.png").toString();
+        URI uri=new URI(file);
+        File f=new File(uri);
+        Assertions.assertNotNull(ImageHelper.createImageView(f.toURI(), 100, 100));
+    }
 }

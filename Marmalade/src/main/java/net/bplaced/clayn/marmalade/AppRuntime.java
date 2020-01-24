@@ -21,28 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.bplaced.clayn.marmalade.io;
+package net.bplaced.clayn.marmalade;
 
-import javafx.scene.image.Image;
+import javafx.application.Platform;
+import net.bplaced.clayn.marmalade.app.MarmaladeApplication;
+import net.bplaced.clayn.marmalade.tasks.TaskManager;
 
 /**
  *
  * @author Clayn <clayn_osmato@gmx.de>
  */
-public enum Images
+public final class AppRuntime
 {
-    NO_GAME_ICON("/images/no_game.png");
-    
-    private final String resourcePath;
 
-    private Images(String resourcePath)
+    private static final AppRuntime INSTANCE = new AppRuntime();
+    private final MarmaladeApplication mApp = MarmaladeApplication.prepare();
+
+    public static AppRuntime getRuntime()
     {
-        this.resourcePath = resourcePath;
+        return INSTANCE;
     }
     
-    public Image loadImage() {
-        return new Image(getClass().getResourceAsStream(resourcePath));
+    public MarmaladeApplication getApplication() {
+        return mApp;
     }
     
-    
+    public void close() {
+        TaskManager.getTaskManager().shutdown();
+        Platform.exit();
+    }
 }
