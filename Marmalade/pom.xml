@@ -119,7 +119,42 @@
                 </plugins>
             </build>
         </profile>
-        
+        <profile>
+            <id>linux-build</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <outputDirectory>executable</outputDirectory>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <finalName>Marmalade-Linux-${project.version}</finalName>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>net.bplaced.clayn.marmalade.ui.MarmaladeStarter</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
     <build>
         
