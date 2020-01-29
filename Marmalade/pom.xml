@@ -172,7 +172,7 @@
                     <appName>Marmalade</appName>
                                         
                     <bundleArguments>
-                        <runtime>${native.library}</runtime>
+                        <runtime />
                         <mac.dmg.simple>true</mac.dmg.simple>
                         <systemWide>true</systemWide>
                     </bundleArguments>
