@@ -80,6 +80,14 @@ public class GameDetailsController extends GameInputDialogContentController
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
+        ImageView imageImg=ImageHelper.createImageView(Images.DIRECTORY, 24);
+        ImageView exec=ImageHelper.createImageView(Images.DIRECTORY, 24);
+        imageButton.setText("");
+        executableButton.setText("");
+        imageButton.getStyleClass().add("gameButton");
+        executableButton.getStyleClass().add("gameButton");
+        imageButton.setGraphic(imageImg);
+        executableButton.setGraphic(exec);
         image.imageProperty().bind(Bindings.createObjectBinding(
                 new Callable<Image>()
         {

@@ -74,6 +74,7 @@ public class MainMenuController implements Initializable
         controller.setGame(new Game());
         controller.setEditMode(false);
         Scene sc = new Scene(p);
+        sc.getStylesheets().addAll("/styles/styles.css");
         Stage st = new Stage();
         st.setScene(sc);
         st.initModality(Modality.WINDOW_MODAL);
